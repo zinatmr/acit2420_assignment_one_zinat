@@ -190,9 +190,11 @@ doctl compute droplet list
 
 **References:**
 
-[How to Install and Configure doctl](https://docs.digitalocean.com/reference/doctl/how-to/install/)
-[classnotes]
-[DOCTL Resources](https://www.digitalocean.com/community/tutorials/how-to-use-doctl-the-official-digitalocean-command-line-client)
+- [How to Install and Configure doctl](https://docs.digitalocean.com/reference/doctl/how-to/install/)
+
+- [classnotes]
+
+- [DOCTL Resources](https://www.digitalocean.com/community/tutorials/how-to-use-doctl-the-official-digitalocean-command-line-client)
 
 
 
