@@ -25,7 +25,7 @@ sudo pacman -S doctl
 doctl version
 ```
 The output should be as follows:
-![[./assets/doctl_version.png]]
+![](./assets/doctl_version.png)
 
 ### Step 2: Create a DigitalOcean API Token
 Before authenticating **doctl**, create an API token with both read and write access. Follow the following steps:
