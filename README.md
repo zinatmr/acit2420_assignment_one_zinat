@@ -25,6 +25,7 @@ sudo pacman -S doctl
 doctl version
 ```
 The output should be as follows:
+
 ![](./assets/doctl_version.png)
 
 ### Step 2: Create a DigitalOcean API Token
