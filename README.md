@@ -32,17 +32,22 @@ The output should be as follows:
 Before authenticating **doctl**, create an API token with both read and write access. Follow the following steps:
 1. Log in to your DigitalOcean accout.
 2. Go to the **API** section in the control panel. (On the left side of the page).
-![[./assets/api.png]]
-Then click on **Generate New Token**.
-![[./assets/generate_token.png]]
+
+![](./assets/api.png)
+- Then click on **Generate New Token**.
+
+![](./assets/generate_token.png)
 3. Name the Token and select **Custom Scopes** marked by red square and select the all four options in the **Quick bulk** marked by blue square.
-![[./assets/customing.png]]
+
+![](./assets/customing.png)
 Then click on **Generate Token**.
-![[./assets/generate_token_two.png]]
+
+![](./assets/generate_token_two.png)
+
 4. Save the token in a secure place, as it will only be shown once.
 
 ### Step 3: Authenticate **doctl** with your DigitalOcean Account
-After having the API token, you need to authenticate **doctl** to grant access to your DigitalOcean account.
+After having the API token, you need to authenticate **doctl** to grant access to your DigitalOcean account. To do this follow the steps below:
 1. Type in the following command and give a name:
 ```bash
 doctl auth init --context <NAME>
@@ -58,7 +63,7 @@ then to switch between accounts , use:
 doctl auth switch --context <NAME>
 ```
 ### Step 4: Validate that doctl is working
-Now to check that **doctl** is authorized to use your account, you need to try some test commands.
+Now to check that **doctl** is authorized to use your account, you need to try some test commands. To do this follow the steps below:
 1. Type in the following command to **interact** with your DigitalOcean account :
 ```bash
 doctl auth init
@@ -90,22 +95,26 @@ mkdir .ssh
 
 2. Type in the following command to cerate the SSH key:
 ```bash
-ssh-keygen -t ed25519 -f ~/.ssh/do-key -C "your email address"
+ssh-keygen -t ed25519 -f ~/.ssh/<your-key> -C "your email address"
 ```
-Follow the  steps that are prompted in the terminal, you can choose to have paraphrase or you can ignore.
-In the above command -t stands for "type" which is the type of encryption used for the key, -f stands for "filaname" and specifies filename and location, -C stands for "comment" which attaches a comment to the key
-The above command will generate two plain text in the .ssh directory: "do-key" which is your private key and "do-key.pub" which is your public key and need to copy to your DigitalOcean accout. this will be used to create **droplets** which can be securedly logged in.
+- You can choose a meaningfull key name in the your-key (e.g., do-key).
+- Follow the  steps that are prompted in the terminal, you can choose to have paraphrase or you can ignore.
+- In the above command `-t` stands for "type" which is the type of encryption used for the key. 
+- `-f` stands for "filaname" and specifies filename and location. 
+- `-C` stands for "comment" which attaches a comment to the key.
+The above command will generate two plain text in the .ssh directory: 
+- "your-key" which is your private key and "your-key.pub" which is your public key and need to copy to your DigitalOcean accout. This will be used to create **droplets** which can be securedly logged in.
 
 ## Uploading SSH key pair to DigitalOcean using doctl
 ### Step 1: Uploading the SSH key
-1. Type in the following command to upload the ssh key to your DigitalOcean account.
+1. Type in the following command to upload the SSH key to your DigitalOcean account.
 ```bash
 doctl compute ssh-key import "your-key-name" --public-key-file ~/.ssh/do-key.pub
 ```
-Replace "your-key-name" with a meaningfull name for the SSH key(e.g., "my-droplet-key")
-The --public-key-file option is used to specify the path to your public key.
+- Replace "your-key-name" with a meaningfull name for the SSH key(e.g., "my-droplet-key")
+- The --public-key-file option is used to specify the path to your public key.
 ### Step 2: Verify the SSH key was uploaded
-1. Type in the following command to verify the ssh key was uploaded successfully.
+1. Type in the following command to verify if the SSH key was uploaded successfully.
 ```bash
 doctl compute ssh-key list
 ```
@@ -117,7 +126,7 @@ You should see something like below:
 ### Step 3: Creating a cloud-init config
 On your terminal create a cloud-init.yml file that contains the following:
 ```bash
-   #cloud-config
+#cloud-config
 users:
   - name: user-name #change me
     primary_group: group-name #change me
@@ -140,31 +149,48 @@ packages:
 disable_root: true
 
 ```
-You should give your own user-name that creates a user account in the server. Keep the primary group name same as user name. Copy your ssh key from `/.ssh/do-key.pub` and paste it under `ssh-authorized-keys:` after the `-`. This public ssh key will be added to the authorized_keys file in your new user home directory. You can select predetermined set of packages to be installed in your new droplets by typing their name under the packages after the `-`.
-The `disable_root: true` is used to disable direct login as the root user on the droplet.
+- You should give your own user-name that creates a user account in the server. 
+- Keep the primary group name same as user name. 
+- Copy your ssh key from `/.ssh/your-key.pub` and paste it under `ssh-authorized-keys:` after the `-`. This public ssh key will be added to the authorized_keys file in your new user home/.ssh directory. 
+- You can select predetermined set of packages to be installed in your new droplets by typing their name under the packages after the `-`.
+- The `disable_root: true` is used to disable direct login as the root user on the droplet.
 
-## Creating a new droplet running Arch Linux:
+## Creating a new droplet using custom image and cloud-init using doctl:
 ## step 1: Check your available custom image IDs in DigitalOcean
 ```bash
 doctl compute image list-user
 ```
 ## step 2: Create the droplet with the custom image and cloud-init
+1. Type in the following command to create a new DigitalOcean droplet.
 ```bash
 doctl compute droplet create <droplet-name> \
 --size s-1vcpu-1gb --image <arch-linux-id> --region sfo3 \
 --ssh-keys <your-ssh-key-id> --user-data-file cloud-init.yml --wait
-
 ```
+
+- `droplet-name` specify the name of the Droplet you are creating.
+- `--size` defines the Droplet size. Such as `s-1vcpu-1gb` it's a 1 vCPU Droplet with 1 GB of RAM.
+- `--image` specifies the image ID for the operating system (Arch Linux). You can retrieve the Arch Linux image ID `arch-linux-id` using `doctl compute image list`. 
+- `--region` sets the region where the Droplet will be created (e.g., `sfo3` for San Francisco 3 data center).
+- `--ssh-keys` adds your SSH key for secure access. Replace `your-ssh-key-id` with the ID of your SSH key, which you can retrieve using `doctl compute ssh-key list`.
+- `--user-data-file` specifies a cloud-init configuration file `cloud-init.yml` that you have created in previous steps, which will run upon Droplet creation. This file can be used to automate server setup.
+- `--wait` Tells the command to wait until the Droplet is fully created before finishing.
+
+
 If the above is successfull, you should see something like below:
 ```bash
    ID           Name          Public IPv4      Private IPv4    Public IPv6    Memory    VCPUs    Disk    Region Image                                                          VPC UUID                                Status    Tags    Features              Volumes
 238999715      droplet-name  42.23.244.179    78.201.7.1                     1024      1        25      sfo3      Arch Linux Arch-Linux-x86_64-cloudimg-20240901.259602.qcow2    9153234f-3d72-3333-8260-6aa489466569    active            private_networking
 ```
+Alternatively you can use the following command to check your list of droplets.
+```bash
+doctl compute droplet list
+```
+# Congratulations!!! You have created your droplet using doctl and cloud-init.
 
+**References:**
 
-
-
-
+[`ln` How to Install and Configure doctl](https://docs.digitalocean.com/reference/doctl/how-to/install/)
 
 
 
