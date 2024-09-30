@@ -19,7 +19,7 @@ sudo pacman -Syu
 ```bash
 sudo pacman -S doctl
 ```
--The ``-S`` option tells **pacman** to synchronize the package database and install the specified package
+- The ``-S`` option tells **pacman** to synchronize the package database and install the specified package
 4. Verify the installation and check the version. Type in the following:
 ```bash
 doctl version
